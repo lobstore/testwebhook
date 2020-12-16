@@ -9,6 +9,7 @@
 
 <?php
 include 'process.php';
+
 ?>
 <div id="back">
 	<a href="/">back</a>
@@ -40,16 +41,19 @@ include 'process.php';
 				}else{
 					$numberstringShort = $numberstring;
 				}
+				print_r($row2[1]['idusers']);
+
 		 	for ($i=$firstIndex; $i < $numberstringShort; $i++) {
 		 		echo "<tr>
-		 		<td>".$row2[$i]['idusers']."</td>
-		 		<td>".$row2[$i]['hash']."</td>
-				<td>".$row2[$i]['name']."</td>
-				<td>".$row2[$i]['family']."</td>
-				<td>".$row2[$i]['key']."</td>
-				<td>".$row2[$i]['url']."</td>
-				<td>".$row2[$i]['img_name']."</td>
-				</tr>";
+		 		<td>".$row2[$i]['idusers']."</td>".
+		 		"<td>".$row2[$i]['hash']."</td>".
+				"<td>".$row2[$i]['name']."</td>".
+				"<td>".$row2[$i]['family']."</td>".
+				"<td>".$row2[$i]['key']."</td>".
+				"<td>".$row2[$i]['url']."</td>".
+				"<td>".$row2[$i]['img_name']."</td>".
+				"<td><a href='users.php?page=".$_GET['page']."&edit=".$row2[$i]["idusers"]."'>edit</a></td>".
+				"</tr>";
 		 	}
 		 ?>
 </div>
@@ -60,6 +64,18 @@ include 'process.php';
 			} ?>
 
 		</div>
-
+		<div id="inputy">
+		<? if (isset($_GET['edit'])) {
+			echo "<form action='users.php?page=".$_GET['page']."&edit=".$_GET['edit']."' method='POST'>
+			<input type='text' value='".$row2[$_GET['edit']]['hash']."' name='hash' placeholder='hash'>
+			<input type='text' value='".$row2[$_GET['edit']]['name']."' name='name' placeholder='name'>
+			<input type='text' value='".$row2[$_GET['edit']]['family']."' name='family' placeholder='family'>
+			<input type='text' value='".$row2[$_GET['edit']]['key']."' name='key' placeholder='key'>
+			<input type='text' value='".$row2[$_GET['edit']]['url']."' name='url' placeholder='url'>
+			<input type='text' value='".$row2[$_GET['edit']]['img_name']."' name='img_name'  placeholder='img_name'>
+			<input type='submit' value = 'edit' name='edit'>
+			</form>";
+		} ?>
+		</div>
 </body>
 </html>

@@ -18,4 +18,18 @@ body{
     text-decoration: none;
 }
 
+#inputy{
+	display: flex;
+	float: left;
+}
+
+#userdate{
+	display: flex;
+    flex-direction: column;
+}
+
+table{
+	width: 50%;
+}
+
  a:hover {background-color: #ddd;}
