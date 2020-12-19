@@ -29,7 +29,6 @@ mysqli_set_charset($link,"utf8");
 	$idusers = $_GET['edit'];
 	$query = "UPDATE $BDname.users set `hash` ='$hash', `name`='$name',`family` ='$family',`key` ='$key',`url` = '$url',`img_name` ='$img_name' where `idusers` = $idusers";
 }
-
 @$result = mysqli_query($link, $query);
 
 ?>

@@ -28,19 +28,23 @@ include 'process.php';
 	</tr>
 			<?php
 			print_r($_POST);
-			$query2 = "SELECT * from $BDname.users";
+			if (isset($_GET['hash'])&&$_GET['hash']!='') {
+				$SearchByHash = $_GET['hash'];
+				$query2 = "SELECT * from $BDname.users where hash = '$SearchByHash'";
+			}else{$query2 = "SELECT * from $BDname.users";}
 			$result2 = mysqli_query($link, $query2);
 			@$numberstring = mysqli_num_rows($result2);
 			for ($i=0; $i < $numberstring; $i++) {
 				$row2[$i] = mysqli_fetch_assoc($result2);
 				}
 				if ($numberstring>5) {
-					$numPage = $numberstring / 5;
-					$currentPage = 0;
-					$currentPage = $_GET['page'];
-					$numberstringShort = ($currentPage+1) * 5;
-					$firstIndex = $currentPage*5;
+					@$numPage = $numberstring / 5;
+					@$currentPage = 0;
+					@$currentPage = $_GET['page'];
+					@$numberstringShort = ($currentPage+1) * 5;
+					@$firstIndex = $currentPage*5;
 				}else{
+					$firstIndex = 0;
 					$numberstringShort = $numberstring;
 				}
 
@@ -53,7 +57,8 @@ include 'process.php';
 							"<td>".$row2[$i]['key']."</td>".
 							"<td>".$row2[$i]['url']."</td>".
 							"<td>".$row2[$i]['img_name']."</td>".
-							"<td><a href='users.php?page=".$_GET['page']."&edit=".$row2[$i]["idusers"]."'>edit</a></td>".
+							"<td><a href='users.php?page=".$_GET['page']."&edit=".$row2[$i]["idusers"].(isset($_GET['hash'])?'&hash='.$_GET['hash']:'')."'>edit</a></td>".
+							"<td><a href='users.php?page=".$_GET['page']."&delete=".$row2[$i]["idusers"].(isset($_GET['hash'])?'&hash='.$_GET['hash']:'')."'>delete</a></td>".
 					"</tr>";
 		 	}
 		 ?>
@@ -61,13 +66,13 @@ include 'process.php';
 </table>
 		<div class="pagination">
 			<?php for ($i=0; $i < $numPage; $i++) {
-			echo "<a href='users.php?page=$i'>".($i+1)."</a>";
+			echo "<a href='users.php?page=$i".(isset($_GET['hash'])?'&hash='.$_GET['hash']:'')."'>".($i+1)."</a>";
 			}echo "<a href='users.php?page=".$_GET['page']."&add=true'>ADD ROW</a>" ?>
 
 		</div>
 		<div id="inputy">
 		<? if (@isset($_GET['edit'])&&@isset($row2[$_GET['edit']-1])) {
-			echo "<form action='users.php?page=".$_GET['page']."&edit=".$_GET['edit']."' method='POST'>
+			echo "<form action='users.php?page=".$_GET['page']."&edit=".$_GET['edit'].(isset($_GET['hash'])?'&hash='.$_GET['hash']:'')."' method='POST'>
 						<input type='text' value='".$row2[$_GET['edit']-1]['hash']."' name='hash' placeholder='hash'>
 						<input type='text' value='".$row2[$_GET['edit']-1]['name']."' name='name' placeholder='name'>
 						<input type='text' value='".$row2[$_GET['edit']-1]['family']."' name='family' placeholder='family'>
@@ -77,7 +82,7 @@ include 'process.php';
 						<input id='addbutton' type='submit' value = 'EDIT' name='edit'>
 					</form>";
 		}elseif (@isset($_GET['add'])) {
-			echo "<form action='users.php?page=".$_GET['page']."' method='POST'>
+			echo "<form action='users.php?page=".$_GET['page']."&hash=".$_GET['hash']."' method='POST'>
 						<input type='text' name='hash' placeholder='hash'>
 						<input type='text' name='name' placeholder='name'>
 						<input type='text' name='family' placeholder='family'>
@@ -87,7 +92,7 @@ include 'process.php';
 						<input id='addbutton' type='submit' value = 'ADD ROW' name='add'>
 					</form>";
 		}elseif(@!isset($row2[$_GET['edit']-1])&&@isset($_GET['edit'])){
-			echo "<form action='users.php?page=".$_GET['page']."' method='POST'>
+			echo "<form action='users.php?page=".$_GET['page']."&hash=".$_GET['hash']."' method='POST'>
 						<input type='text' name='hash' placeholder='hash'>
 						<input type='text' name='name' placeholder='name'>
 						<input type='text' name='family' placeholder='family'>
@@ -96,8 +101,18 @@ include 'process.php';
 						<input type='text' name='img_name'  placeholder='img_name'>
 						<input id='addbutton' type='submit' value = 'ADD ROW' name='add'>
 					</form>";
+		}elseif (@isset($_GET['delete'])) {
+			$delete = $_GET['delete'];
+			$deleteQuery = "DELETE from $BDname.users where idusers = $delete";
+			mysqli_query($link, $deleteQuery);
 		}
+			echo "<form action='users.php' method='GET'>
+						<input type='text' name='hash' placeholder='Search By Hash...'>
+						<input type='submit' value='Search..''>
+						<input type='submit' name='hash' value=''>
+					</form>";
 		 ?>
+
 
 		</div>
 </body>

@@ -20,7 +20,8 @@ body{
 
 #inputy{
 	display: flex;
-	float: left;
+    float: left;
+    flex-direction: column;
 }
 
 #userdate{
